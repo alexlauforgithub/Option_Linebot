@@ -56,18 +56,7 @@ def callback():
 
 @app.route('/op')
 def op():
-    driver = webdriver.PhantomJS()
-    driver.get('http://info512.taifex.com.tw/Future/FusaQuote_Norl.aspx')
-    driver.get('http://info512.taifex.com.tw/Future/OptQuote_Norl.aspx')
-
-    selectbox = webdriver.support.ui.Select(driver.find_element_by_name('ctl00$ContentPlaceHolder1$ddlFusa_SelMon'))
-    selectbox.all_selected_options
-    [sel.text for sel in selectbox.options]
-    selectbox.select_by_value([sel.text for sel in selectbox.options][0])
-    time.sleep(2)
-    soup = BeautifulSoup(driver.page_source,"lxml")
-
-    table = pd.read_html(str(soup.select('#divDG')[0]))[0]
+    table=MyMod.opweek()
 
     return table.to_html()
 
@@ -112,9 +101,9 @@ def handle_message(event):
                         label='月選擇權策略所需金額計算',
                         text='月選擇權策略所需金額計算'
                     ),
-                    MessageTemplateAction(
+                    URITemplateAction(
                         label='選擇權不太即時報價表',
-                        text='爬蟲爬起來爬起來'
+                        uri='https://rocky-beyond-10519.herokuapp.com/op'
                     ),
 
                     MessageTemplateAction(
@@ -165,7 +154,7 @@ def handle_message(event):
                     ),
                     MessageTemplateAction(
                         label='勒式勿賭',
-                        text='買入週選價平勒式'
+                        text='買入週選價平上下兩檔勒式'
                     ),
                     MessageTemplateAction(
                         label='多頭價差',
